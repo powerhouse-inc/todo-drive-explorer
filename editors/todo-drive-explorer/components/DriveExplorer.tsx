@@ -5,6 +5,7 @@ import type { EditorContext, DocumentModelModule } from "document-model";
 import { CreateDocumentModal } from "@powerhousedao/design-system";
 import { CreateDocument } from "./CreateDocument.js";
 import { useDriveContext } from "@powerhousedao/reactor-browser";
+import { ProgressBar } from "./ProgressBar.js";
 
 import { type ToDoState } from "../types/todo.js"
 
@@ -109,30 +110,50 @@ export function DriveExplorer({
         ) : (
           <>
             <h2 className="text-lg font-semibold mb-4">ToDos:</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Document ID</th>
-                  <th>Document Type</th>
-                  <th>Tasks</th>
-                  <th>Completed</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(todoNodes).map(([documentId, todoNode]) => (
-                  <tr key={documentId}>
-                    <td>
-                      <div onClick={() => setActiveDocumentId(documentId)}>
-                        {documentId}
-                      </div>
-                    </td>
-                    <td>{todoNode.documentType}</td>
-                    <td>{todoNode.global.stats.total}</td>
-                    <td>{todoNode.global.stats.checked}</td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tasks</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {Object.entries(todoNodes).map(([documentId, todoNode]) => (
+                    <tr key={documentId} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div 
+                          onClick={() => setActiveDocumentId(documentId)}
+                          className="text-blue-600 hover:text-blue-800 cursor-pointer"
+                        >
+                          {documentId}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {todoNode.documentType}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {todoNode.global.stats.total}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {todoNode.global.stats.checked}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="w-32">
+                          <ProgressBar 
+                            value={todoNode.global.stats.checked} 
+                            max={todoNode.global.stats.total} 
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {/* Create Document Section */}
             <CreateDocument
