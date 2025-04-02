@@ -1,5 +1,7 @@
 # Todo Drive Explorer Example
 
+![Todo Drive Explorer](https://raw.githubusercontent.com/powerhouse-inc/todo-drive-explorer/9a87871e61460e73ddf8635fd756a0cd991306d6/todo-drive-explorer.png)
+
 This example demonstrates how to create a Todo Drive Explorer application using the Powerhouse platform. The application allows users to create and manage todo lists with a visual progress indicator.
 
 ## Prerequisites
@@ -134,13 +136,8 @@ This example demonstrates how to create a Todo Drive Explorer application using 
    ph connect
    ```
 
-## Features
+   ![Todo Drive Explorer Demo](https://raw.githubusercontent.com/powerhouse-inc/todo-drive-explorer/9a87871e61460e73ddf8635fd756a0cd991306d6/demo.gif)
 
-- Create and manage multiple todo lists
-- Visual progress tracking with progress bars
-- Task completion statistics
-- Modern UI with responsive design
-- Real-time updates
 
 ## Project Structure
 
@@ -167,3 +164,66 @@ todo-demo/
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Powerhouse CLI Commands Reference
+
+### The `use` Command
+
+The `use` command allows you to switch between different environments for your Powerhouse project dependencies.
+
+#### Basic Syntax
+```bash
+ph use <environment> [localPath]
+```
+
+#### Available Environments
+- `latest` - Uses the latest stable version of all Powerhouse packages
+- `dev` - Uses development versions of the packages
+- `prod` - Uses production versions of the packages
+- `local` - Uses local versions of the packages from a specified path
+
+#### Examples
+```bash
+# Switch to latest stable versions
+ph use latest
+
+# Switch to development versions
+ph use dev
+
+# Use local versions from a specific path
+ph use local /path/to/local/packages
+
+# Use a specific package manager
+ph use latest --package-manager pnpm
+```
+
+### The `update` Command
+
+The `update` command allows you to update your Powerhouse dependencies to their latest versions based on the version ranges specified in your `package.json`.
+
+#### Basic Syntax
+```bash
+ph update [options]
+```
+
+#### Examples
+```bash
+# Update dependencies based on package.json ranges
+ph update
+
+# Force update to latest dev versions
+ph update --force dev
+
+# Force update to latest stable versions
+ph update --force prod
+
+# Use a specific package manager
+ph update --package-manager pnpm
+```
+
+### Key Differences
+1. The `use` command is for switching between different environments, while the `update` command is for updating dependencies within your current environment.
+2. The `use` command requires you to specify an environment, while the `update` command is optional with its parameters.
+3. The `use` command can work with local packages, while the `update` command is focused on updating remote package versions.
+
+Both commands support multiple package managers (npm, yarn, pnpm, and bun) and will automatically detect your project's package manager based on the lockfile present in your project directory.
