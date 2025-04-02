@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "types": ["vitest/globals"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "paths": {
+      "document-models/*": ["./document-models/*"],
+      "editors/*": ["./editors/*"]
+    }
+  },
+  "include": ["**/*"],
+  "exclude": ["dist", "node_modules"]
+}
