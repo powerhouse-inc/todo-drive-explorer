@@ -79,10 +79,10 @@ This example demonstrates how to create a Todo Drive Explorer application using 
 8. Set up the drive explorer app:
    - Remove unnecessary files:
      ```bash
-     rm -rf editors/test-editor/hooks
-     rm -rf editors/test-editor/components/FileItemsGrid.tsx
-     rm -rf editors/test-editor/components/FolderItemsGrid.tsx
-     rm -rf editors/test-editor/components/FolderTree.tsx
+     rm -rf editors/todo-drive-explorer/hooks
+     rm -rf editors/todo-drive-explorer/components/FileItemsGrid.tsx
+     rm -rf editors/todo-drive-explorer/components/FolderItemsGrid.tsx
+     rm -rf editors/todo-drive-explorer/components/FolderTree.tsx
      ```
 
    - Create and populate the following files:
