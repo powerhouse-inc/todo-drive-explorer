@@ -1,4 +1,4 @@
-import { type EditorProps, hashKey } from "document-model";
+import { type EditorDispatch, type EditorProps, hashKey } from "document-model";
 import {
   type DocumentDriveDocument,
   addFolder,
@@ -6,15 +6,18 @@ import {
   updateNode,
   generateNodesCopy,
   copyNode,
+  type DocumentDriveAction,
 } from "document-drive";
+import { type DriveEditorProps, DriveContextProvider } from "@powerhousedao/reactor-browser";
 import { WagmiContext } from "@powerhousedao/design-system";
 import { DriveExplorer } from "./components/DriveExplorer.js";
 import { useCallback } from "react";
 
-export type IProps = EditorProps<DocumentDriveDocument>;
+export type IProps = DriveEditorProps<DocumentDriveDocument>;
 
-export default function Editor(props: IProps) {
-  const { dispatch, context } = props;
+export function BaseEditor(props: IProps) {
+  const { dispatch: _dispatch, context } = props;
+  const dispatch = _dispatch as EditorDispatch<DocumentDriveAction>;
 
   const onAddFolder = useCallback(
     (name: string, parentFolder?: string) => {
@@ -82,5 +85,15 @@ export default function Editor(props: IProps) {
         />
       </WagmiContext>
     </div>
+  );
+}
+
+export default function Editor(props: IProps) {
+  return (
+    <DriveContextProvider value={props.context}>
+      <WagmiContext>
+        <BaseEditor {...props} />
+      </WagmiContext>
+    </DriveContextProvider>
   );
 }
