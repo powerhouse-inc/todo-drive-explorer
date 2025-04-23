@@ -23,9 +23,10 @@ import {
   type TimelineItem,
 } from "@powerhousedao/design-system";
 import { useState, Suspense, type FC, useCallback, lazy } from "react";
-import {
-  ToDo
-} from "../../../document-models/index.js"
+import { 
+  useDocumentModel, 
+  useDocumentEditorModule 
+} from "../hooks/useDocumentModels.js";
 
 export interface EditorContainerProps {
   driveId: string;
@@ -36,63 +37,20 @@ export interface EditorContainerProps {
   context: EditorContext;
 }
 
-const documentModelsMap = {
-  [ToDo.documentModel.id]: ToDo,
-  [documentModelDocumentModelModule.documentModel.id]:
-    documentModelDocumentModelModule,
-};
-
-// Create a type-safe lazy loader for editor modules
-const createLazyModuleLoader = <T,>(loader: () => Promise<T>) => {
-  let modulePromise: Promise<T> | null = null;
-  let loadedModule: T | null = null;
-  
-  return () => {
-    if (loadedModule) return Promise.resolve(loadedModule);
-    if (!modulePromise) {
-      modulePromise = loader().then(module => {
-        loadedModule = module;
-        return module;
-      });
-    }
-    return modulePromise;
-  };
-};
-
-const documentEditorMap = {
-  [ToDo.documentModel.id]: createLazyModuleLoader(() =>
-    import("../../to-do-list/index.js").then(m => m.default)
-  ),
-  [documentModelDocumentModelModule.documentModel.id]: createLazyModuleLoader(() =>
-    import("@powerhousedao/builder-tools/style.css").then(() =>
-      import("@powerhousedao/builder-tools/document-model-editor").then(
-        m => m.documentModelEditorModule
-      )
-    )
-  ),
-} as const;
-
-function getDocumentModel(documentType: string) {
-  return documentModelsMap[documentType];
-}
-
-function getDocumentEditor(documentType: string) {
-  return documentEditorMap[documentType];
-}
-
 export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
   const { driveId, documentId, documentType, onClose, title, context } = props;
 
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItem | null>(null);
   const [showRevisionHistory, setShowRevisionHistory] = useState(false);
-  const [editorModule, setEditorModule] = useState<unknown>(null);
   const { useDocumentEditorProps } = useDriveContext();
   const user = context.user as User | undefined;
   const timelineItems = useTimelineItems(documentId);
 
-  const documentModelModule = getDocumentModel(
+  const documentModelModule = useDocumentModel(
     documentType,
   ) as DocumentModelModule<PHDocument>;
+
+  const { editorModule, isLoading } = useDocumentEditorModule(documentType);
 
   const { dispatch, error, document } = useDocumentEditorProps({
     documentId,
@@ -115,17 +73,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
     </div>
   );
 
-  if (!document) return loadingContent;
-
-  const editorLoader = getDocumentEditor(documentType);
-
-  // Load editor module if not already loaded
-  if (!editorModule && editorLoader) {
-    void editorLoader().then(module => {
-      setEditorModule(module);
-    });
-    return loadingContent;
-  }
+  if (!document || isLoading) return loadingContent;
 
   if (!editorModule) {
     console.error("No editor found for document type:", documentType);
