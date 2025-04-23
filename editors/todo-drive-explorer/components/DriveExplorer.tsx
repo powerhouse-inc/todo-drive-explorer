@@ -1,13 +1,14 @@
 import { useCallback, useState, useRef, useEffect, useMemo } from "react";
-import type { FileNode, Node } from "document-drive";
-import { EditorContainer } from "./EditorContainer.js";
-import type { EditorContext, DocumentModelModule } from "document-model";
+import type { FileNode, GetDocumentOptions, Node } from "document-drive";
+import { EditorContainer, EditorContainerProps } from "./EditorContainer.js";
+import type { DocumentModelModule } from "document-model";
 import { CreateDocumentModal } from "@powerhousedao/design-system";
 import { CreateDocument } from "./CreateDocument.js";
-import { useDriveContext } from "@powerhousedao/reactor-browser";
+import { type DriveEditorContext, useDriveContext } from "@powerhousedao/reactor-browser";
 import { ProgressBar } from "./ProgressBar.js";
 
 import { type ToDoState } from "../types/todo.js"
+import { ReactorAnalyticsProvider } from "./ReactorAnalyticsProvider.js";
 
 interface DriveExplorerProps {
   driveId: string;
@@ -16,7 +17,7 @@ interface DriveExplorerProps {
   onDeleteNode: (nodeId: string) => void;
   renameNode: (nodeId: string, name: string) => void;
   onCopyNode: (nodeId: string, targetName: string, parentId?: string) => void;
-  context: EditorContext;
+  context: DriveEditorContext;
 }
 
 export function DriveExplorer({
@@ -24,6 +25,8 @@ export function DriveExplorer({
   nodes,
   context,
 }: DriveExplorerProps) {
+  const { getDocumentRevision } = context;
+  
   const [activeDocumentId, setActiveDocumentId] = useState<
     string | undefined
   >();
@@ -85,6 +88,14 @@ export function DriveExplorer({
     [],
   );
 
+  const onGetDocumentRevision = useCallback(
+    (options?: GetDocumentOptions) => {
+      if (!activeDocumentId) return;
+      return getDocumentRevision?.(activeDocumentId, options);
+    },
+    [getDocumentRevision, activeDocumentId],
+  );
+
   const filteredDocumentModels = documentModels;
 
 
@@ -99,14 +110,19 @@ export function DriveExplorer({
       {/* Main Content */}
       <div className="flex-1 p-4 overflow-y-auto">
         {activeDocument ? (
-          <EditorContainer
-            context={context}
-            documentId={activeDocumentId!}
-            documentType={activeDocument.documentType}
-            driveId={driveId}
-            onClose={handleEditorClose}
-            title={activeDocument.name}
-          />
+          <ReactorAnalyticsProvider store={context.analyticsStore}>
+            <EditorContainer
+              context={{
+                ...context,
+                getDocumentRevision: onGetDocumentRevision,
+              }}
+              documentId={activeDocumentId!}
+              documentType={activeDocument.documentType}
+              driveId={driveId}
+              onClose={handleEditorClose}
+              title={activeDocument.name}
+            />
+          </ReactorAnalyticsProvider>
         ) : (
           <>
             <h2 className="text-lg font-semibold mb-4">ToDos:</h2>

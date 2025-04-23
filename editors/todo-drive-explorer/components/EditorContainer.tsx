@@ -11,11 +11,16 @@ import {
   type EditorContext,
   type EditorProps,
   type PHDocument,
+  type EditorModule,
+  type Operation,
 } from "document-model";
+import { useTimelineItems, getRevisionFromDate } from "@powerhousedao/common";
 import {
   DocumentToolbar,
   RevisionHistory,
   DefaultEditorLoader,
+  generateLargeTimeline,
+  type TimelineItem,
 } from "@powerhousedao/design-system";
 import { useState, Suspense, type FC, useCallback, lazy } from "react";
 import {
@@ -37,20 +42,33 @@ const documentModelsMap = {
     documentModelDocumentModelModule,
 };
 
+// Create a type-safe lazy loader for editor modules
+const createLazyModuleLoader = <T,>(loader: () => Promise<T>) => {
+  let modulePromise: Promise<T> | null = null;
+  let loadedModule: T | null = null;
+  
+  return () => {
+    if (loadedModule) return Promise.resolve(loadedModule);
+    if (!modulePromise) {
+      modulePromise = loader().then(module => {
+        loadedModule = module;
+        return module;
+      });
+    }
+    return modulePromise;
+  };
+};
+
 const documentEditorMap = {
-  [ToDo.documentModel.id]: lazy(() =>
-    import("../../to-do-list/index.js").then((m) => ({
-      default: m.default.Component,
-    })),
+  [ToDo.documentModel.id]: createLazyModuleLoader(() =>
+    import("../../to-do-list/index.js").then(m => m.default)
   ),
-  [documentModelDocumentModelModule.documentModel.id]: lazy(() =>
+  [documentModelDocumentModelModule.documentModel.id]: createLazyModuleLoader(() =>
     import("@powerhousedao/builder-tools/style.css").then(() =>
       import("@powerhousedao/builder-tools/document-model-editor").then(
-        (m) => ({
-          default: m.documentModelEditorModule.Component,
-        }),
-      ),
-    ),
+        m => m.documentModelEditorModule
+      )
+    )
   ),
 } as const;
 
@@ -65,9 +83,12 @@ function getDocumentEditor(documentType: string) {
 export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
   const { driveId, documentId, documentType, onClose, title, context } = props;
 
+  const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItem | null>(null);
   const [showRevisionHistory, setShowRevisionHistory] = useState(false);
+  const [editorModule, setEditorModule] = useState<unknown>(null);
   const { useDocumentEditorProps } = useDriveContext();
   const user = context.user as User | undefined;
+  const timelineItems = useTimelineItems(documentId);
 
   const documentModelModule = getDocumentModel(
     documentType,
@@ -96,9 +117,17 @@ export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
 
   if (!document) return loadingContent;
 
-  const Editor = getDocumentEditor(documentType);
+  const editorLoader = getDocumentEditor(documentType);
 
-  if (!Editor) {
+  // Load editor module if not already loaded
+  if (!editorModule && editorLoader) {
+    void editorLoader().then(module => {
+      setEditorModule(module);
+    });
+    return loadingContent;
+  }
+
+  if (!editorModule) {
     console.error("No editor found for document type:", documentType);
     return (
       <div className="flex-1">
@@ -106,7 +135,9 @@ export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
       </div>
     );
   }
-  const EditorComponent = Editor as FC<EditorProps<PHDocument>>;
+
+  const moduleWithComponent = editorModule as EditorModule<PHDocument>;
+  const EditorComponent = moduleWithComponent.Component;
 
   return showRevisionHistory ? (
     <RevisionHistory
@@ -125,9 +156,20 @@ export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
         onShowRevisionHistory={() => setShowRevisionHistory(true)}
         onSwitchboardLinkClick={() => {}}
         title={title}
+        timelineButtonVisible
+        timelineItems={timelineItems.data}
+        onTimelineItemClick={setSelectedTimelineItem}
       />
       <EditorComponent
-        context={context}
+        context={{
+          ...context,
+          readMode: !!selectedTimelineItem,
+          selectedTimelineRevision: getRevisionFromDate(
+            selectedTimelineItem?.startDate,
+            selectedTimelineItem?.endDate,
+            document.operations.global,
+          ),
+        }}
         dispatch={dispatch}
         document={document}
         error={error}

@@ -16,8 +16,7 @@ import { useCallback } from "react";
 export type IProps = DriveEditorProps<DocumentDriveDocument>;
 
 export function BaseEditor(props: IProps) {
-  const { dispatch: _dispatch, context } = props;
-  const dispatch = _dispatch as EditorDispatch<DocumentDriveAction>;
+  const { dispatch, context } = props;
 
   const onAddFolder = useCallback(
     (name: string, parentFolder?: string) => {
