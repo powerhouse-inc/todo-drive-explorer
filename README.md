@@ -4,6 +4,22 @@
 
 This example demonstrates how to create a Todo Drive Explorer application using the Powerhouse platform. The application allows users to create and manage todo lists with a visual progress indicator.
 
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+- [Project Structure](#project-structure)
+- [License](#license)
+- [Powerhouse CLI Commands Reference](#powerhouse-cli-commands-reference)
+  - [The `use` Command](#the-use-command)
+  - [The `update` Command](#the-update-command)
+  - [Key Differences](#key-differences)
+- [Using the Timeline Feature](#using-the-timeline-feature)
+  - [Enabling the Timeline Feature](#enabling-the-timeline-feature)
+  - [Implementation in Default Drive Explorer](#implementation-in-default-drive-explorer)
+  - [Implementation in Custom Drive Explorer](#implementation-in-custom-drive-explorer)
+  - [Handling Timeline Revisions in Document Editor](#handling-timeline-revisions-in-document-editor)
+
 ## Prerequisites
 
 1. Update `ph-cmd` to the latest version:
@@ -227,3 +243,127 @@ ph update --package-manager pnpm
 3. The `use` command can work with local packages, while the `update` command is focused on updating remote package versions.
 
 Both commands support multiple package managers (npm, yarn, pnpm, and bun) and will automatically detect your project's package manager based on the lockfile present in your project directory.
+
+## Using the Timeline Feature
+
+The timeline feature allows users to view document history and navigate through different revisions of a document.
+
+### Enabling the Timeline Feature
+
+To enable the timeline feature in your document editor, you need to set `timelineEnabled: true` in your editor module configuration:
+
+```typescript
+// editors/to-do-list/index.ts
+export const module: EditorModule<ToDoDocument> = {
+  Component: Editor as unknown as FC<EditorProps<ToDoDocument> & Record<string, unknown>>,
+  documentTypes: ["powerhouse/todo"],
+  config: {
+    id: "editor-id",
+    disableExternalControls: true,
+    documentToolbarEnabled: true,
+    showSwitchboardLink: true,
+    timelineEnabled: true,  // Enable timeline feature
+  },
+};
+```
+
+This setting enables the timeline button in the document toolbar.
+
+### Implementation in Default Drive Explorer
+
+When using the default drive explorer with `ph connect`, the timeline functionality is handled automatically:
+
+1. Document analytics are collected and passed to the document toolbar
+2. The timeline button appears in the toolbar when enabled
+3. Users can click on timeline items to view document revisions
+
+### Implementation in Custom Drive Explorer
+
+For custom drive explorers, you need to handle timeline items fetching and user interaction manually:
+
+First, import the necessary utilities from the Powerhouse common package:
+
+```typescript
+import { useTimelineItems, getRevisionFromDate } from "@powerhousedao/common";
+```
+
+1. Fetch timeline items using the `useTimelineItems` hook:
+   ```typescript
+   // In your EditorContainer.tsx
+   const timelineItems = useTimelineItems(documentId);
+   ```
+
+2. Track the selected timeline item in state:
+   ```typescript
+   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItem | null>(null);
+   ```
+
+3. Pass the timeline items to the DocumentToolbar and handle item selection:
+   ```typescript
+   <DocumentToolbar
+     timelineButtonVisible={editorModule.config.timelineEnabled}
+     timelineItems={timelineItems.data}
+     onTimelineItemClick={setSelectedTimelineItem}
+     // ... other props
+   />
+   ```
+
+   Note: The `timelineButtonVisible` prop should be set based on the `timelineEnabled` setting in the editor module's configuration. This ensures the timeline button is only shown when the feature is enabled for that specific document type.
+
+4. Pass the required context values to your editor component:
+   ```typescript
+   <EditorComponent
+     context={{
+       ...context,
+       readMode: !!selectedTimelineItem,
+       selectedTimelineRevision: getRevisionFromDate(
+         selectedTimelineItem?.startDate,
+         selectedTimelineItem?.endDate,
+         document.operations.global,
+       ),
+     }}
+     // ... other props
+   />
+   ```
+
+### Handling Timeline Revisions in Document Editor
+
+In your document editor (e.g., `editors/to-do-list/editor.tsx`), you need to handle the timeline context props:
+
+1. Extract timeline-related properties from the context:
+   ```typescript
+   const { readMode = false, selectedTimelineRevision, getDocumentRevision } = context;
+   ```
+
+2. Fetch the document at the selected revision when in read mode:
+   ```typescript
+   const [readModeDocument, setReadModeDocument] = useState<ToDoDocument | null>(null);
+   
+   useEffect(() => {
+     const getReadModeDocument = async () => {
+       if (getDocumentRevision && readMode && typeof selectedTimelineRevision === 'number') {
+         const document = await getDocumentRevision({ revisions: { global: selectedTimelineRevision } });
+         setReadModeDocument(document);
+       } else if (!readMode) {
+         setReadModeDocument(null);
+       }
+     };
+     getReadModeDocument();
+   }, [getDocumentRevision, readMode, selectedTimelineRevision]);
+   
+   // Use the appropriate document based on mode
+   const document = readModeDocument || writeModeDocument;
+   ```
+
+3. Adapt your UI to reflect read mode:
+   ```typescript
+   {readMode && (
+     <div className="text-gray-500 text-md text-center">(🔒 Read Mode)</div>
+   )}
+   
+   {!readMode && (
+     // Edit controls here
+   )}
+   ```
+
+This implementation allows users to navigate through document history while preventing edits to historical revisions.
