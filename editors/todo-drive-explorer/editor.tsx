@@ -1,4 +1,4 @@
-import { type EditorDispatch, type EditorProps, hashKey } from "document-model";
+import { v4 as uuid } from "uuid";
 import {
   type DocumentDriveDocument,
   addFolder,
@@ -22,7 +22,7 @@ export function BaseEditor(props: IProps) {
     (name: string, parentFolder?: string) => {
       dispatch(
         addFolder({
-          id: hashKey(),
+          id: uuid(),
           name,
           parentFolder,
         }),
@@ -47,7 +47,7 @@ export function BaseEditor(props: IProps) {
 
   const onCopyNode = useCallback(
     (nodeId: string, targetName: string, parentId?: string) => {
-      const generateId = () => hashKey();
+      const generateId = () => uuid();
 
       const copyNodesInput = generateNodesCopy(
         {

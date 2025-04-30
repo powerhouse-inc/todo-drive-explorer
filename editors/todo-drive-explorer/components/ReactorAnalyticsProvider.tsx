@@ -3,15 +3,12 @@ import { AnalyticsProvider } from '@powerhousedao/reactor-browser/analytics/cont
 
 export interface ReactorAnalyticsProviderProps {
     children: React.ReactNode;
-    store?: IAnalyticsStore;
 }
 
 export const ReactorAnalyticsProvider: React.FC<ReactorAnalyticsProviderProps> = (props) => {
-    const { children, store } = props;
+    const { children } = props;
 
-    return store ? (
-        <AnalyticsProvider store={store}>{children}</AnalyticsProvider>
-    ) : (
-        children
+    return (
+        <AnalyticsProvider databaseName="/:analytics">{children}</AnalyticsProvider>
     );
 };

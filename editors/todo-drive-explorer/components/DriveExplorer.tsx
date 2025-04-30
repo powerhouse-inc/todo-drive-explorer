@@ -110,7 +110,7 @@ export function DriveExplorer({
       {/* Main Content */}
       <div className="flex-1 p-4 overflow-y-auto">
         {activeDocument ? (
-          <ReactorAnalyticsProvider store={context.analyticsStore}>
+          <ReactorAnalyticsProvider>
             <EditorContainer
               context={{
                 ...context,
