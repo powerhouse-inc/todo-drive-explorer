@@ -9,6 +9,7 @@ import {
   type DocumentDriveAction,
 } from "document-drive";
 import { type DriveEditorProps, DriveContextProvider } from "@powerhousedao/reactor-browser";
+import { AnalyticsProvider } from "@powerhousedao/reactor-browser/analytics/context";
 import { WagmiContext } from "@powerhousedao/design-system";
 import { DriveExplorer } from "./components/DriveExplorer.js";
 import { useCallback } from "react";
@@ -72,17 +73,15 @@ export function BaseEditor(props: IProps) {
 
   return (
     <div className="new-drive-explorer" style={{ height: "100%" }}>
-      <WagmiContext>
-        <DriveExplorer
-          driveId={props.document.state.global.id}
-          nodes={props.document.state.global.nodes}
-          onAddFolder={onAddFolder}
-          onDeleteNode={onDeleteNode}
-          renameNode={renameNode}
-          onCopyNode={onCopyNode}
-          context={context}
-        />
-      </WagmiContext>
+      <DriveExplorer
+        driveId={props.document.state.global.id}
+        nodes={props.document.state.global.nodes}
+        onAddFolder={onAddFolder}
+        onDeleteNode={onDeleteNode}
+        renameNode={renameNode}
+        onCopyNode={onCopyNode}
+        context={context}
+      />
     </div>
   );
 }
@@ -91,7 +90,9 @@ export default function Editor(props: IProps) {
   return (
     <DriveContextProvider value={props.context}>
       <WagmiContext>
-        <BaseEditor {...props} />
+        <AnalyticsProvider databaseName={props.context.analyticsDatabaseName}>
+          <BaseEditor {...props} />
+        </AnalyticsProvider>
       </WagmiContext>
     </DriveContextProvider>
   );

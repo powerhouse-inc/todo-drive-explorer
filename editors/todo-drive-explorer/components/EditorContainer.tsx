@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
+ 
 import {
   useDriveContext,
   exportDocument,
   type User,
+  type DriveEditorContext,
 } from "@powerhousedao/reactor-browser";
 import {
   documentModelDocumentModelModule,
@@ -22,11 +23,7 @@ import {
   generateLargeTimeline,
   type TimelineItem,
 } from "@powerhousedao/design-system";
-import { useState, Suspense, type FC, useCallback, lazy } from "react";
-import { 
-  useDocumentModel, 
-  useDocumentEditorModule 
-} from "../hooks/useDocumentModels.js";
+import { useState, Suspense, type FC, useCallback } from "react";
 
 export interface EditorContainerProps {
   driveId: string;
@@ -34,23 +31,20 @@ export interface EditorContainerProps {
   documentType: string;
   onClose: () => void;
   title: string;
-  context: EditorContext;
+  context: Omit<DriveEditorContext, "getDocumentRevision"> &
+    Pick<EditorContext, "getDocumentRevision">;
+  documentModelModule: DocumentModelModule<PHDocument>;
+  editorModule: EditorModule;
 }
 
 export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
-  const { driveId, documentId, documentType, onClose, title, context } = props;
+  const { driveId, documentId, documentType, onClose, title, context, documentModelModule, editorModule } = props;
 
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItem | null>(null);
   const [showRevisionHistory, setShowRevisionHistory] = useState(false);
   const { useDocumentEditorProps } = useDriveContext();
   const user = context.user as User | undefined;
   const timelineItems = useTimelineItems(documentId);
-
-  const documentModelModule = useDocumentModel(
-    documentType,
-  ) as DocumentModelModule<PHDocument>;
-
-  const { editorModule, isLoading } = useDocumentEditorModule(documentType);
 
   const { dispatch, error, document } = useDocumentEditorProps({
     documentId,
@@ -73,16 +67,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
     </div>
   );
 
-  if (!document || isLoading) return loadingContent;
-
-  if (!editorModule) {
-    console.error("No editor found for document type:", documentType);
-    return (
-      <div className="flex-1">
-        No editor found for document type: {documentType}
-      </div>
-    );
-  }
+  if (!document) return loadingContent;
 
   const moduleWithComponent = editorModule as EditorModule<PHDocument>;
   const EditorComponent = moduleWithComponent.Component;
