@@ -74,7 +74,7 @@ export function BaseEditor(props: IProps) {
   return (
     <div className="new-drive-explorer" style={{ height: "100%" }}>
       <DriveExplorer
-        driveId={props.document.state.global.id}
+        driveId={props.document.id}
         nodes={props.document.state.global.nodes}
         onAddFolder={onAddFolder}
         onDeleteNode={onDeleteNode}
