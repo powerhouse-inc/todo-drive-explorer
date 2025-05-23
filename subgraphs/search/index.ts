@@ -8,7 +8,7 @@ export class SearchSubgraph extends Subgraph {
   resolvers = {
     Query: {
       example: {
-        resolve: async (parent, args, context, info) => {
+        resolve: async () => {
           return "example";
         },
       },
