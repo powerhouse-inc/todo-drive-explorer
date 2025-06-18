@@ -1,4 +1,4 @@
-import { Form, StringField } from "@powerhousedao/design-system/scalars";
+import { Form, StringField } from "@powerhousedao/document-engineering";
 
 interface InputFieldProps {
   input: string;

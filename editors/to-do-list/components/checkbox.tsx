@@ -1,4 +1,4 @@
-import { Form, BooleanField } from "@powerhousedao/design-system/scalars";
+import { Form, BooleanField } from "@powerhousedao/document-engineering";
 
 interface CheckboxProps {
   value: boolean;
