@@ -1,8 +1,8 @@
 import type { DocumentModelState } from "document-model";
 
 export const documentModel: DocumentModelState = {
-  id: "powerhouse/todo",
-  name: "ToDo",
+  id: "powerhouse/todolist",
+  name: "ToDoList",
   extension: ".phdm",
   description: "todo document model",
   author: {
@@ -16,7 +16,7 @@ export const documentModel: DocumentModelState = {
       state: {
         global: {
           schema:
-            "type ToDoState {\n  items: [ToDoItem!]!\n  stats: ToDoListStats!\n}\n\n# Defines a GraphQL type for a single to-do item\ntype ToDoItem {\n  id: ID! # Unique identifier for each to-do item\n  text: String! # The text description of the to-do item\n  checked: Boolean! # Status of the to-do item (checked/unchecked)\n}\n\n# Defines a GraphQL type for the statistics of the to-do list\ntype ToDoListStats {\n  total: Int! # Total number of items\n  checked: Int! # Number of checked items\n  unchecked: Int! # Number of unchecked items\n}",
+            "type ToDoListState {\n  items: [ToDoItem!]!\n  stats: ToDoListStats!\n}\n\n# Defines a GraphQL type for a single to-do item\ntype ToDoItem {\n  id: ID! # Unique identifier for each to-do item\n  text: String! # The text description of the to-do item\n  checked: Boolean! # Status of the to-do item (checked/unchecked)\n}\n\n# Defines a GraphQL type for the statistics of the to-do list\ntype ToDoListStats {\n  total: Int! # Total number of items\n  checked: Int! # Number of checked items\n  unchecked: Int! # Number of unchecked items\n}",
           initialValue:
             '"{\\n  \\"items\\": [],\\n  \\"stats\\": {\\n    \\"total\\": 0,\\n    \\"checked\\": 0,\\n    \\"unchecked\\": 0\\n  }\\n}"',
           examples: [],
@@ -29,16 +29,15 @@ export const documentModel: DocumentModelState = {
       },
       modules: [
         {
-          id: "Z9xfHv1K7dQWt1nBeTF9E0ckd5k=",
+          id: "87bf6b13-9de5-4d37-9b0d-a2c34e876280",
           name: "base_operations",
           description: "",
           operations: [
             {
-              id: "qLzJqfXLBcQwkmARZYVtvzslS9M=",
-              name: "ADD_TODO_ITEM_INPUT",
+              id: "d75156cf-e281-4f15-8375-86d1040e7a21",
+              name: "ADD_TODO_ITEM",
               description: "",
-              schema:
-                "input AddTodoItemInputInput {\n  id: ID!\n  text: String!\n}",
+              schema: "input AddTodoItemInput {\n  id: ID!\n  text: String!\n}",
               template: "",
               reducer: "",
               errors: [],
@@ -46,11 +45,11 @@ export const documentModel: DocumentModelState = {
               scope: "global",
             },
             {
-              id: "CbETp0f80AgUX8fHZUc2DH+YkhI=",
-              name: "UPDATE_TODO_ITEM_INPUT",
+              id: "c80817d1-d141-406d-8c96-ab2513810375",
+              name: "UPDATE_TODO_ITEM",
               description: "",
               schema:
-                "input UpdateTodoItemInputInput {\n  id: ID!\n  text: String\n  checked: Boolean\n}",
+                "input UpdateTodoItemInput {\n  id: ID!\n  text: String\n  checked: Boolean\n}",
               template: "",
               reducer: "",
               errors: [],
@@ -58,10 +57,10 @@ export const documentModel: DocumentModelState = {
               scope: "global",
             },
             {
-              id: "ll++NO6W3gr1fs9CUhAp3JlTeak=",
-              name: "DELETE_TODO_ITEM_INPUT",
+              id: "d1fcdf77-c41c-41ab-90ad-198c2b5c1248",
+              name: "DELETE_TODO_ITEM",
               description: "",
-              schema: "input DeleteTodoItemInputInput {\n  id: ID!\n}",
+              schema: "input DeleteTodoItemInput {\n  id: ID!\n}",
               template: "",
               reducer: "",
               errors: [],

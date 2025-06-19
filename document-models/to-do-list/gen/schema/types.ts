@@ -55,12 +55,12 @@ export type Scalars = {
   URL: { input: string; output: string };
 };
 
-export type AddTodoItemInputInput = {
+export type AddTodoItemInput = {
   id: Scalars["ID"]["input"];
   text: Scalars["String"]["input"];
 };
 
-export type DeleteTodoItemInputInput = {
+export type DeleteTodoItemInput = {
   id: Scalars["ID"]["input"];
 };
 
@@ -70,18 +70,18 @@ export type ToDoItem = {
   text: Scalars["String"]["output"];
 };
 
+export type ToDoListState = {
+  items: Array<ToDoItem>;
+  stats: ToDoListStats;
+};
+
 export type ToDoListStats = {
   checked: Scalars["Int"]["output"];
   total: Scalars["Int"]["output"];
   unchecked: Scalars["Int"]["output"];
 };
 
-export type ToDoState = {
-  items: Array<ToDoItem>;
-  stats: ToDoListStats;
-};
-
-export type UpdateTodoItemInputInput = {
+export type UpdateTodoItemInput = {
   checked?: InputMaybe<Scalars["Boolean"]["input"]>;
   id: Scalars["ID"]["input"];
   text?: InputMaybe<Scalars["String"]["input"]>;

@@ -5,24 +5,31 @@ import {
   applyMixins,
   type SignalDispatch,
 } from "document-model";
-import { type ToDoState, type ToDoLocalState } from "./types.js";
-import { type ToDoAction } from "./actions.js";
+import { type ToDoListState, type ToDoListLocalState } from "./types.js";
+import { type ToDoListAction } from "./actions.js";
 import { reducer } from "./reducer.js";
 import utils from "./utils.js";
-import ToDo_BaseOperations from "./base-operations/object.js";
+import ToDoList_BaseOperations from "./base-operations/object.js";
 
 export * from "./base-operations/object.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-interface ToDo extends ToDo_BaseOperations {}
+interface ToDoList extends ToDoList_BaseOperations {}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-class ToDo extends BaseDocumentClass<ToDoState, ToDoLocalState, ToDoAction> {
+class ToDoList extends BaseDocumentClass<
+  ToDoListState,
+  ToDoListLocalState,
+  ToDoListAction
+> {
   static fileExtension = ".phdm";
 
   constructor(
     initialState?: Partial<
-      ExtendedState<PartialState<ToDoState>, PartialState<ToDoLocalState>>
+      ExtendedState<
+        PartialState<ToDoListState>,
+        PartialState<ToDoListLocalState>
+      >
     >,
     dispatch?: SignalDispatch,
   ) {
@@ -30,7 +37,7 @@ class ToDo extends BaseDocumentClass<ToDoState, ToDoLocalState, ToDoAction> {
   }
 
   public saveToFile(path: string, name?: string) {
-    return super.saveToFile(path, ToDo.fileExtension, name);
+    return super.saveToFile(path, ToDoList.fileExtension, name);
   }
 
   public loadFromFile(path: string) {
@@ -44,6 +51,6 @@ class ToDo extends BaseDocumentClass<ToDoState, ToDoLocalState, ToDoAction> {
   }
 }
 
-applyMixins(ToDo, [ToDo_BaseOperations]);
+applyMixins(ToDoList, [ToDoList_BaseOperations]);
 
-export { ToDo };
+export { ToDoList };

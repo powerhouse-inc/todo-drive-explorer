@@ -4,7 +4,7 @@ import {
   type EditorModule,
   type PHDocument,
 } from "document-model";
-import { ToDo } from "../../document-models/index.js";
+import { ToDoList } from "../../document-models/index.js";
 
 // Create a type-safe lazy loader for editor modules
 export const createLazyModuleLoader = <T,>(loader: () => Promise<T>) => {
@@ -25,13 +25,13 @@ export const createLazyModuleLoader = <T,>(loader: () => Promise<T>) => {
 
 // Using a more generic type to avoid type errors with specific document models
 export const documentModelsMap: Record<string, DocumentModelModule<any>> = {
-  [ToDo.documentModel.id]: ToDo,
+  [ToDoList.documentModel.id]: ToDoList,
   [documentModelDocumentModelModule.documentModel.id]:
     documentModelDocumentModelModule,
 };
 
 export const documentEditorMap = {
-  [ToDo.documentModel.id]: createLazyModuleLoader(() =>
+  [ToDoList.documentModel.id]: createLazyModuleLoader(() =>
     import("../to-do-list/index.js").then(m => m.default)
   ),
   [documentModelDocumentModelModule.documentModel.id]: createLazyModuleLoader(() =>

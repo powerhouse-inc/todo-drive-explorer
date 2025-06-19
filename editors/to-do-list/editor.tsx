@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import type { EditorProps } from "document-model";
 import {
-  type ToDoDocument,
+  type ToDoListDocument,
   actions,
   type ToDoItem,
-} from "../../document-models/to-do/index.js";
+} from "../../document-models/to-do-list/index.js";
 import { InputField } from "./components/inputField.js";
 import { Button } from "@powerhousedao/design-system";
 import { Checkbox } from "./components/checkbox.js";
-export type IProps = EditorProps<ToDoDocument>;
+export type IProps = EditorProps<ToDoListDocument>;
 
 export default function Editor(props: IProps) {
   const { document: writeModeDocument, dispatch, context } = props;
   const { readMode = false, selectedTimelineRevision, getDocumentRevision } = context;
 
-  const [readModeDocument, setReadModeDocument] = useState<ToDoDocument | null>(null);
+  const [readModeDocument, setReadModeDocument] = useState<ToDoListDocument | null>(null);
   const [todoItem, setTodoItem] = useState("");
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editedText, setEditedText] = useState("");
@@ -30,7 +30,7 @@ export default function Editor(props: IProps) {
   useEffect(() => {
     const getReadModeDocument = async () => {
       if (getDocumentRevision && readMode && typeof selectedTimelineRevision === 'number') {
-        const document = await getDocumentRevision({ revisions: { global: selectedTimelineRevision } }) as ToDoDocument;
+        const document = await getDocumentRevision({ revisions: { global: selectedTimelineRevision } }) as ToDoListDocument;
         setReadModeDocument(document);
       } else if (!readMode) {
         setReadModeDocument(null);
@@ -100,7 +100,7 @@ export default function Editor(props: IProps) {
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
                             dispatch(
-                              actions.addTodoItemInput({
+                              actions.addTodoItem({
                                 id: Math.random().toString(),
                                 text: todoItem,
                               })
@@ -121,7 +121,7 @@ export default function Editor(props: IProps) {
                       size="small"
                       onClick={() => {
                         dispatch(
-                          actions.addTodoItemInput({
+                          actions.addTodoItem({
                             id: Math.random().toString(),
                             text: todoItem,
                           })
@@ -242,7 +242,7 @@ export default function Editor(props: IProps) {
                     onClick={() => {
                       state.items.forEach((item) => {
                         dispatch(
-                          actions.deleteTodoItemInput({
+                          actions.deleteTodoItem({
                             id: item.id,
                           })
                         );
@@ -302,7 +302,7 @@ export default function Editor(props: IProps) {
                         value={item.checked}
                         onChange={(e: boolean) => {
                           dispatch(
-                            actions.updateTodoItemInput({ id: item.id, checked: e })
+                            actions.updateTodoItem({ id: item.id, checked: e })
                           );
                         }}
                       />
@@ -317,7 +317,7 @@ export default function Editor(props: IProps) {
                         }}
                         onClick={() => {
                           dispatch(
-                            actions.deleteTodoItemInput({
+                            actions.deleteTodoItem({
                               id: item.id,
                             })
                           );
@@ -339,7 +339,7 @@ export default function Editor(props: IProps) {
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           dispatch(
-                            actions.updateTodoItemInput({
+                            actions.updateTodoItem({
                               id: item.id,
                               text: editedText,
                             })

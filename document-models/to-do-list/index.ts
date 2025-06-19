@@ -7,17 +7,17 @@ import {
   actions as BaseActions,
   type DocumentModelModule,
 } from "document-model";
-import { actions as ToDoActions } from "./gen/index.js";
+import { actions as ToDoListActions } from "./gen/index.js";
 import { reducer } from "./gen/reducer.js";
 import { documentModel } from "./gen/document-model.js";
 import genUtils from "./gen/utils.js";
 import * as customUtils from "./src/utils.js";
-import { type ToDoDocument } from "./gen/types.js";
+import { type ToDoListDocument } from "./gen/types.js";
 
 const utils = { ...genUtils, ...customUtils };
-const actions = { ...BaseActions, ...ToDoActions };
+const actions = { ...BaseActions, ...ToDoListActions };
 
-export const module: DocumentModelModule<ToDoDocument> = {
+export const module: DocumentModelModule<ToDoListDocument> = {
   reducer,
   actions,
   utils,

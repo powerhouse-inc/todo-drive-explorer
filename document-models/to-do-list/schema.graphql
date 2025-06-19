@@ -14,7 +14,7 @@ scalar Amount_Fiat
 scalar Amount_Currency
 scalar Amount_Crypto
 scalar Amount
-type ToDoState {
+type ToDoListState {
   items: [ToDoItem!]!
   stats: ToDoListStats!
 }
@@ -37,17 +37,17 @@ type ToDoListStats {
 
 # base_operations
 
-input AddTodoItemInputInput {
+input AddTodoItemInput {
   id: ID!
   text: String!
 }
 
-input UpdateTodoItemInputInput {
+input UpdateTodoItemInput {
   id: ID!
   text: String
   checked: Boolean
 }
 
-input DeleteTodoItemInputInput {
+input DeleteTodoItemInput {
   id: ID!
 }

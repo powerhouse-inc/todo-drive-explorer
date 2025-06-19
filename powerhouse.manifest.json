@@ -8,14 +8,14 @@
   },
 "documentModels": [
     {
-      "id": "powerhouse/todo",
-      "name": "ToDo"
+      "id": "powerhouse/todolist",
+      "name": "ToDoList"
     }],
   "editors": [
     {
       "id": "powerhouse/todo-editor",
-      "name": "ToDo Editor",
-      "documentTypes": ["powerhouse/todo"]
+      "name": "ToDoList Editor",
+      "documentTypes": ["powerhouse/todolist"]
     }
   ],
   "apps": [
