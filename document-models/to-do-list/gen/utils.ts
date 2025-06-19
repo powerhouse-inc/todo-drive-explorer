@@ -8,13 +8,13 @@ import {
   baseLoadFromInput,
 } from "document-model";
 import {
-  type ToDoDocument,
-  type ToDoState,
-  type ToDoLocalState,
+  type ToDoListDocument,
+  type ToDoListState,
+  type ToDoListLocalState,
 } from "./types.js";
 import { reducer } from "./reducer.js";
 
-export const initialGlobalState: ToDoState = {
+export const initialGlobalState: ToDoListState = {
   items: [],
   stats: {
     total: 0,
@@ -22,9 +22,9 @@ export const initialGlobalState: ToDoState = {
     unchecked: 0,
   },
 };
-export const initialLocalState: ToDoLocalState = {};
+export const initialLocalState: ToDoListLocalState = {};
 
-const utils: DocumentModelUtils<ToDoDocument> = {
+const utils: DocumentModelUtils<ToDoListDocument> = {
   fileExtension: ".phdm",
   createState(state) {
     return {
@@ -34,7 +34,7 @@ const utils: DocumentModelUtils<ToDoDocument> = {
   },
   createExtendedState(extendedState) {
     return baseCreateExtendedState(
-      { ...extendedState, documentType: "powerhouse/todo" },
+      { ...extendedState, documentType: "powerhouse/todolist" },
       utils.createState,
     );
   },

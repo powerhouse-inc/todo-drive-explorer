@@ -4,10 +4,10 @@
  * - delete the file and run the code generator again to have it reset
  */
 
-import type { ToDoBaseOperationsOperations } from "../../gen/base-operations/operations.js";
+import type { ToDoListBaseOperationsOperations } from "../../gen/base-operations/operations.js";
 
-export const reducer: ToDoBaseOperationsOperations = {
-  addTodoItemInputOperation(state, action, dispatch) {
+export const reducer: ToDoListBaseOperationsOperations = {
+  addTodoItemOperation(state, action, dispatch) {
     state.stats.total += 1;
     state.stats.unchecked += 1;
     state.items.push({
@@ -16,7 +16,7 @@ export const reducer: ToDoBaseOperationsOperations = {
         checked: false,
     });
   },
-  updateTodoItemInputOperation(state, action, dispatch) {
+  updateTodoItemOperation(state, action, dispatch) {
     const item = state.items.find(item => item.id === action.input.id);
     if (!item) {
         throw new Error(`Item with id ${action.input.id} not found`);
@@ -35,7 +35,7 @@ export const reducer: ToDoBaseOperationsOperations = {
         item.checked = action.input.checked;
     }
   },
-  deleteTodoItemInputOperation(state, action, dispatch) {
+  deleteTodoItemOperation(state, action, dispatch) {
     const item = state.items.find(item => item.id === action.input.id);
     state.stats.total -= 1;
     if (item?.checked) {

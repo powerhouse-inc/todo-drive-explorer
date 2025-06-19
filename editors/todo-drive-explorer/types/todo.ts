@@ -1,4 +1,4 @@
-import { type ToDoDocument} from "../../../document-models/to-do/index.js"
+import { type ToDoListDocument} from "../../../document-models/to-do-list/index.js"
 
 export type ToDoState = {
     documentType: string;
@@ -6,5 +6,5 @@ export type ToDoState = {
         global: number;
         local: number;
     };
-    global: ToDoDocument["state"]["global"];
+    global: ToDoListDocument["state"]["global"];
 };

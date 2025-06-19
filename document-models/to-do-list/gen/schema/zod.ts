@@ -1,11 +1,11 @@
 import { z } from "zod";
 import type {
-  AddTodoItemInputInput,
-  DeleteTodoItemInputInput,
+  AddTodoItemInput,
+  DeleteTodoItemInput,
   ToDoItem,
+  ToDoListState,
   ToDoListStats,
-  ToDoState,
-  UpdateTodoItemInputInput,
+  UpdateTodoItemInput,
 } from "./types.js";
 
 type Properties<T> = Required<{
@@ -21,8 +21,8 @@ export const definedNonNullAnySchema = z
   .any()
   .refine((v) => isDefinedNonNullAny(v));
 
-export function AddTodoItemInputInputSchema(): z.ZodObject<
-  Properties<AddTodoItemInputInput>
+export function AddTodoItemInputSchema(): z.ZodObject<
+  Properties<AddTodoItemInput>
 > {
   return z.object({
     id: z.string(),
@@ -30,8 +30,8 @@ export function AddTodoItemInputInputSchema(): z.ZodObject<
   });
 }
 
-export function DeleteTodoItemInputInputSchema(): z.ZodObject<
-  Properties<DeleteTodoItemInputInput>
+export function DeleteTodoItemInputSchema(): z.ZodObject<
+  Properties<DeleteTodoItemInput>
 > {
   return z.object({
     id: z.string(),
@@ -47,6 +47,14 @@ export function ToDoItemSchema(): z.ZodObject<Properties<ToDoItem>> {
   });
 }
 
+export function ToDoListStateSchema(): z.ZodObject<Properties<ToDoListState>> {
+  return z.object({
+    __typename: z.literal("ToDoListState").optional(),
+    items: z.array(ToDoItemSchema()),
+    stats: ToDoListStatsSchema(),
+  });
+}
+
 export function ToDoListStatsSchema(): z.ZodObject<Properties<ToDoListStats>> {
   return z.object({
     __typename: z.literal("ToDoListStats").optional(),
@@ -56,16 +64,8 @@ export function ToDoListStatsSchema(): z.ZodObject<Properties<ToDoListStats>> {
   });
 }
 
-export function ToDoStateSchema(): z.ZodObject<Properties<ToDoState>> {
-  return z.object({
-    __typename: z.literal("ToDoState").optional(),
-    items: z.array(ToDoItemSchema()),
-    stats: ToDoListStatsSchema(),
-  });
-}
-
-export function UpdateTodoItemInputInputSchema(): z.ZodObject<
-  Properties<UpdateTodoItemInputInput>
+export function UpdateTodoItemInputSchema(): z.ZodObject<
+  Properties<UpdateTodoItemInput>
 > {
   return z.object({
     checked: z.boolean().nullish(),
