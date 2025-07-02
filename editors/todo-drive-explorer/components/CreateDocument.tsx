@@ -29,7 +29,7 @@ export const CreateDocument: React.FC<CreateDocumentProps> = ({
           return (
             <Button
               key={spec.id}
-              color="light"
+              color="blue"
               size="small"
               className="cursor-pointer"
               aria-details={spec.description}
