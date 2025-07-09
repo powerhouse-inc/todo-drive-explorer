@@ -40,8 +40,8 @@ export class TodoIndexerProcessor extends OperationalProcessor<DB> {
         await this.operationalStore
           .insertInto("todo")
           .values({
-            task: strand.documentId,
-            status: true,
+            name: strand.documentId,
+            completed: true,
           })
           .execute();
       }

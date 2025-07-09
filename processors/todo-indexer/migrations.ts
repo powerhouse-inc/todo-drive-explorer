@@ -5,9 +5,9 @@ export async function up(db: IOperationalStore<DB>): Promise<void> {
   // Create table
   await db.schema
     .createTable("todo")
-    .addColumn("task", "varchar(255)")
-    .addColumn("status", "boolean")
-    .addPrimaryKeyConstraint("todo_pkey", ["task"])
+    .addColumn("name", "varchar(255)")
+    .addColumn("completed", "boolean")
+    .addPrimaryKeyConstraint("todo_pkey", ["name"])
     .ifNotExists()
     .execute();
 

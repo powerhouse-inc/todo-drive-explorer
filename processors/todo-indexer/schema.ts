@@ -1,6 +1,6 @@
 export interface Todo {
-  status: boolean | null;
-  task: string;
+  completed: boolean | null;
+  name: string;
 }
 
 export interface DB {

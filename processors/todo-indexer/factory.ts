@@ -1,6 +1,7 @@
 import { type ProcessorRecord } from "document-drive/processors/types";
 import { type IProcessorHostModule } from "document-drive/processors/types";
 import { TodoIndexerProcessor } from "./index.js";
+import { type DB } from "./schema.js";
 
 export const todoIndexerProcessorFactory =
   (module: IProcessorHostModule) =>
