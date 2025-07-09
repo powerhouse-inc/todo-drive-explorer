@@ -26,17 +26,7 @@ export class SearchSubgraph extends Subgraph {
   };
 
   async onSetup() {
-    await this.createOperationalTables();
-  }
-
-  async createOperationalTables() {
-    await this.operationalStore.schema.createTableIfNotExists(
-      "example",
-      (table) => {
-        table.string("id").primary();
-        table.string("name");
-      },
-    );
+    
   }
 
   async onDisconnect() {}

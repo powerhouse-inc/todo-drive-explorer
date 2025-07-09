@@ -29,7 +29,7 @@ export const schema: DocumentNode = gql`
   """
   type ToDoListQueries {
     getDocument(driveId: String, docId: PHID): ToDoList
-    getDocuments: [ToDoList!]
+    getDocuments(driveId: String): [ToDoList!]
   }
 
   type Query {
