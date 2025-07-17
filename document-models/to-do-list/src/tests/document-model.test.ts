@@ -13,7 +13,7 @@ describe("To Do List Document Model", () => {
     const document = utils.createDocument();
 
     expect(document).toBeDefined();
-    expect(document.documentType).toBe("powerhouse/todolist");
+    expect(document.header?.documentType).toBe("powerhouse/todolist");
   });
 
   it("should create a new To Do List document with a valid initial state", () => {

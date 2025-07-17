@@ -6,8 +6,9 @@ import { CreateDocumentModal } from "@powerhousedao/design-system";
 import { CreateDocument } from "./CreateDocument.js";
 import { type DriveEditorContext, useDriveContext } from "@powerhousedao/reactor-browser";
 import { ProgressBar } from "./ProgressBar.js";
-
+import { type ToDoListDocument } from "document-models/to-do-list/index.js";
 import { type ToDoState } from "../types/todo.js"
+import { ToDoList } from "document-models/to-do-list/gen/object.js";
 
 interface DriveExplorerProps {
   driveId: string;
@@ -42,9 +43,9 @@ export function DriveExplorer({
   const { todoNodes } = useMemo(() => {
     return Object.keys(state).reduce(
       (acc, curr) => {
-        const document = state[curr];
-        if (document.documentType.startsWith("powerhouse/todo")) {
-          acc.todoNodes[curr] = document as ToDoState;
+        const document = state[curr] as unknown as ToDoListDocument;
+        if (document.header?.documentType?.startsWith("powerhouse/todolist")) {
+          acc.todoNodes[curr] = document.state.global as unknown as ToDoState;
         }
 
         return acc;
