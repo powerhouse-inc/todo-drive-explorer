@@ -1,23 +1,34 @@
 import { Subgraph } from "@powerhousedao/reactor-api";
 
 import { gql } from "graphql-tag";
+import { TodoIndexerProcessor } from "../../processors/todo-indexer/index.js";
 
 export class SearchSubgraph extends Subgraph {
   name = "search";
 
   resolvers = {
     Query: {
-      example: {
-        resolve: async () => {
-          return "example";
+      todos: {
+        resolve: async (_: any, args: {driveId: string}) => {
+          const todos = await TodoIndexerProcessor.query(args.driveId, this.relationalDb).selectFrom("todo").selectAll().execute();
+          return todos.map((todo) => ({
+            task: todo.task,
+            status: todo.status,
+          }));
         },
       },
     },
   };
 
   typeDefs = gql`
+
+  type ToDoListEntry {
+    task: String!
+    status: Boolean!
+  }
+
     type Query {
-      example(id: ID!): String
+      todos(driveId: ID!): [ToDoListEntry]
     }
   `;
 
@@ -25,19 +36,6 @@ export class SearchSubgraph extends Subgraph {
     example: "test",
   };
 
-  async onSetup() {
-    await this.createOperationalTables();
-  }
-
-  async createOperationalTables() {
-    await this.operationalStore.schema.createTableIfNotExists(
-      "example",
-      (table) => {
-        table.string("id").primary();
-        table.string("name");
-      },
-    );
-  }
 
   async onDisconnect() {}
 }
