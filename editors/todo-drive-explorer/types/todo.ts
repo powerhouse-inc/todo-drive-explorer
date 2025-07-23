@@ -1,10 +1,4 @@
-import { type ToDoListDocument} from "../../../document-models/to-do-list/index.js"
+import { type HookState } from "@powerhousedao/reactor-browser/hooks/document-state";
+import { type ToDoListDocument } from "../../../document-models/to-do-list/index.js";
 
-export type ToDoState = {
-    documentType: string;
-    revision: {
-        global: number;
-        local: number;
-    };
-    global: ToDoListDocument["state"]["global"];
-};
+export type ToDoState = HookState & ToDoListDocument["state"];

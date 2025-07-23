@@ -40,20 +40,15 @@ export function DriveExplorer({
     fetchDocuments(driveId).catch(console.error);
   }, [activeDocumentId]);
 
-  const { todoNodes } = useMemo(() => {
-    return Object.keys(state).reduce(
-      (acc, curr) => {
-        const document = state[curr] as unknown as ToDoListDocument;
-        if (document.header?.documentType?.startsWith("powerhouse/todolist")) {
-          acc.todoNodes[curr] = document.state.global as unknown as ToDoState;
-        }
+  const todoNodes = useMemo(() => {
+    return Object.keys(state).reduce((acc, curr) => {
+      const document = state[curr];
+      if (document.documentType?.startsWith("powerhouse/todolist")) {
+        acc[curr] = document as ToDoState;
+      }
 
-        return acc;
-      },
-      {
-        todoNodes: {} as Record<string, ToDoState>,
-      },
-    );
+      return acc;
+    }, {} as Record<string, ToDoState>);
   }, [state]);
 
 
