@@ -1,15 +1,15 @@
 import { Subgraph } from "@powerhousedao/reactor-api";
-
 import { gql } from "graphql-tag";
 
-export class SearchSubgraph extends Subgraph {
-  name = "search";
+export class TodoListOperationalSubgraph extends Subgraph {
+  name = "todo-list-operational";
 
   resolvers = {
     Query: {
-      example: {
+      todoList: {
         resolve: async () => {
-          return "example";
+          const todoList = await this.operationalStore.selectFrom("todo").selectAll().execute();
+          return todoList
         },
       },
     },
@@ -17,7 +17,12 @@ export class SearchSubgraph extends Subgraph {
 
   typeDefs = gql`
     type Query {
-      example(id: ID!): String
+      type Todo {
+        name: String!
+        completed: Boolean!
+      }
+
+      todoList: [Todo!]!
     }
   `;
 

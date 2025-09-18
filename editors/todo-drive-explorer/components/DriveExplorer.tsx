@@ -44,7 +44,7 @@ export function DriveExplorer({
       (acc, curr) => {
         const document = state[curr];
         if (document.documentType.startsWith("powerhouse/todo")) {
-          acc.todoNodes[curr] = document as ToDoState;
+          acc.todoNodes[curr] = document.document as ToDoState;
         }
 
         return acc;

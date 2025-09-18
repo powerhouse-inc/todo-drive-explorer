@@ -23,6 +23,10 @@
       "types": "./dist/document-models/index.d.ts",
       "default": "./dist/document-models/index.js"
     },
+    "./processors": {
+      "types": "./dist/processors/index.d.ts",
+      "default": "./dist/processors/index.js"
+    },
     "./subgraphs": {
       "types": "./dist/subgraphs/index.d.ts",
       "default": "./dist/subgraphs/index.js"
