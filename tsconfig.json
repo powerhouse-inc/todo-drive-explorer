@@ -1,26 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
     "outDir": "./dist",
+    "module": "nodenext",
+    "target": "esnext",
+    "lib": ["esnext"],
+    "types": ["node"],
+    "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
     "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "types": ["vitest/globals"],
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "paths": {
-      "document-models/*": ["./document-models/*"],
-      "editors/*": ["./editors/*"]
-    }
-  },
-  "include": ["**/*"],
-  "exclude": ["dist", "node_modules"]
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+  }
 }
