@@ -12,16 +12,21 @@ export type IProps = EditorProps<ToDoListDocument>;
 
 export default function Editor(props: IProps) {
   const { document: writeModeDocument, dispatch, context } = props;
-  const { readMode = false, selectedTimelineRevision, getDocumentRevision } = context;
+  const {
+    readMode = false,
+    selectedTimelineRevision,
+    getDocumentRevision,
+  } = context;
 
-  const [readModeDocument, setReadModeDocument] = useState<ToDoListDocument | null>(null);
+  const [readModeDocument, setReadModeDocument] =
+    useState<ToDoListDocument | null>(null);
   const [todoItem, setTodoItem] = useState("");
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editedText, setEditedText] = useState("");
 
   const document = readModeDocument || writeModeDocument;
 
-  console.log("selectedTimelineRevision", selectedTimelineRevision)
+  console.log("selectedTimelineRevision", selectedTimelineRevision);
 
   const {
     state: { global: state },
@@ -29,17 +34,26 @@ export default function Editor(props: IProps) {
 
   useEffect(() => {
     const getReadModeDocument = async () => {
-      if (getDocumentRevision && readMode && typeof selectedTimelineRevision === 'number') {
-        const document = await getDocumentRevision({ revisions: { global: selectedTimelineRevision } }) as ToDoListDocument;
+      if (
+        getDocumentRevision &&
+        readMode &&
+        typeof selectedTimelineRevision === "number"
+      ) {
+        const document = (await getDocumentRevision({
+          revisions: { global: selectedTimelineRevision },
+        })) as ToDoListDocument;
         setReadModeDocument(document);
       } else if (!readMode) {
         setReadModeDocument(null);
       }
     };
     getReadModeDocument();
-  }, [getDocumentRevision, setReadModeDocument, readMode, selectedTimelineRevision]);
-
-
+  }, [
+    getDocumentRevision,
+    setReadModeDocument,
+    readMode,
+    selectedTimelineRevision,
+  ]);
 
   // Sort items by checked status
   const sortedItems: ToDoItem[] = [...state.items].sort((a, b) => {
@@ -58,10 +72,12 @@ export default function Editor(props: IProps) {
               marginBottom: "20px",
             }}
           >
-            My To-Do List 
+            My To-Do List
           </h1>
           {readMode && (
-            <div className="text-gray-500 text-md text-center">(🔒 Read Mode)</div>
+            <div className="text-gray-500 text-md text-center">
+              (🔒 Read Mode)
+            </div>
           )}
           <br />
           <div
@@ -103,7 +119,7 @@ export default function Editor(props: IProps) {
                               actions.addTodoItem({
                                 id: Math.random().toString(),
                                 text: todoItem,
-                              })
+                              }),
                             );
                             setTodoItem("");
                           }
@@ -124,7 +140,7 @@ export default function Editor(props: IProps) {
                           actions.addTodoItem({
                             id: Math.random().toString(),
                             text: todoItem,
-                          })
+                          }),
                         );
                         setTodoItem("");
                       }}
@@ -133,7 +149,6 @@ export default function Editor(props: IProps) {
                     </Button>
                   </>
                 )}
-        
               </div>
             </div>
             {state.items.length >= 2 && (
@@ -244,14 +259,14 @@ export default function Editor(props: IProps) {
                         dispatch(
                           actions.deleteTodoItem({
                             id: item.id,
-                          })
+                          }),
                         );
                       });
                     }}
                   >
                     Remove All
                   </Button>
-                )}  
+                )}
               </div>
             )}
           </div>
@@ -302,7 +317,7 @@ export default function Editor(props: IProps) {
                         value={item.checked}
                         onChange={(e: boolean) => {
                           dispatch(
-                            actions.updateTodoItem({ id: item.id, checked: e })
+                            actions.updateTodoItem({ id: item.id, checked: e }),
                           );
                         }}
                       />
@@ -319,7 +334,7 @@ export default function Editor(props: IProps) {
                           dispatch(
                             actions.deleteTodoItem({
                               id: item.id,
-                            })
+                            }),
                           );
                         }}
                       >
@@ -327,7 +342,6 @@ export default function Editor(props: IProps) {
                       </Button>
                     </>
                   )}
-                  
                 </div>
 
                 <div style={{ flex: 1 }}>
@@ -342,7 +356,7 @@ export default function Editor(props: IProps) {
                             actions.updateTodoItem({
                               id: item.id,
                               text: editedText,
-                            })
+                            }),
                           );
                           setEditingItemId(null);
                         }

@@ -4,7 +4,9 @@ import type { ToDoListDocument } from "../../document-models/to-do-list/index.js
 import { type FC } from "react";
 
 export const module: EditorModule<ToDoListDocument> = {
-  Component: Editor as unknown as FC<EditorProps<ToDoListDocument> & Record<string, unknown>>,
+  Component: Editor as unknown as FC<
+    EditorProps<ToDoListDocument> & Record<string, unknown>
+  >,
   documentTypes: ["powerhouse/todolist"],
   config: {
     id: "editor-id",

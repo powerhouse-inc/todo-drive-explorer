@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC } from "react";
 
 interface ProgressBarProps {
   value: number;
@@ -29,4 +29,4 @@ export const ProgressBar: FC<ProgressBarProps> = ({ value, max }) => {
       </div>
     </div>
   );
-}; 
+};

@@ -4,10 +4,13 @@ import { EditorContainer, EditorContainerProps } from "./EditorContainer.js";
 import type { DocumentModelModule } from "document-model";
 import { CreateDocumentModal } from "@powerhousedao/design-system";
 import { CreateDocument } from "./CreateDocument.js";
-import { type DriveEditorContext, useDriveContext } from "@powerhousedao/reactor-browser";
+import {
+  type DriveEditorContext,
+  useDriveContext,
+} from "@powerhousedao/reactor-browser";
 import { ProgressBar } from "./ProgressBar.js";
 
-import { type ToDoState } from "../types/todo.js"
+import { type ToDoState } from "../types/todo.js";
 
 interface DriveExplorerProps {
   driveId: string;
@@ -19,19 +22,16 @@ interface DriveExplorerProps {
   context: DriveEditorContext;
 }
 
-export function DriveExplorer({
-  driveId,
-  nodes,
-  context,
-}: DriveExplorerProps) {
+export function DriveExplorer({ driveId, nodes, context }: DriveExplorerProps) {
   const { getDocumentRevision } = context;
-  
+
   const [activeDocumentId, setActiveDocumentId] = useState<
     string | undefined
   >();
   const [openModal, setOpenModal] = useState(false);
   const selectedDocumentModel = useRef<DocumentModelModule | null>(null);
-  const { addDocument, documentModels, useDriveDocumentStates } = useDriveContext();
+  const { addDocument, documentModels, useDriveDocumentStates } =
+    useDriveContext();
 
   const [state, fetchDocuments] = useDriveDocumentStates({ driveId });
 
@@ -54,7 +54,6 @@ export function DriveExplorer({
       },
     );
   }, [state]);
-
 
   const handleEditorClose = useCallback(() => {
     setActiveDocumentId(undefined);
@@ -97,7 +96,6 @@ export function DriveExplorer({
 
   const filteredDocumentModels = documentModels;
 
-
   const fileNodes = nodes.filter((node) => node.kind === "file") as FileNode[];
   // Get the active document info from nodes
   const activeDocument = activeDocumentId
@@ -112,25 +110,24 @@ export function DriveExplorer({
     ? context.getEditor(activeDocument.documentType)
     : null;
 
-
   return (
     <div className="flex h-full">
       {/* Main Content */}
       <div className="flex-1 p-4 overflow-y-auto">
         {activeDocument && documentModelModule && editorModule ? (
-            <EditorContainer
-              context={{
-                ...context,
-                getDocumentRevision: onGetDocumentRevision,
-              }}
-              documentId={activeDocumentId!}
-              documentType={activeDocument.documentType}
-              driveId={driveId}
-              onClose={handleEditorClose}
-              title={activeDocument.name}
-              documentModelModule={documentModelModule}
-              editorModule={editorModule}
-            />
+          <EditorContainer
+            context={{
+              ...context,
+              getDocumentRevision: onGetDocumentRevision,
+            }}
+            documentId={activeDocumentId!}
+            documentType={activeDocument.documentType}
+            driveId={driveId}
+            onClose={handleEditorClose}
+            title={activeDocument.name}
+            documentModelModule={documentModelModule}
+            editorModule={editorModule}
+          />
         ) : (
           <>
             <h2 className="text-lg font-semibold mb-4">ToDos:</h2>
@@ -138,18 +135,28 @@ export function DriveExplorer({
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tasks</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Progress</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Document ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Document Type
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tasks
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Completed
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Progress
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {Object.entries(todoNodes).map(([documentId, todoNode]) => (
                     <tr key={documentId} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div 
+                        <div
                           onClick={() => setActiveDocumentId(documentId)}
                           className="text-blue-600 hover:text-blue-800 cursor-pointer"
                         >
@@ -167,9 +174,9 @@ export function DriveExplorer({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="w-32">
-                          <ProgressBar 
-                            value={todoNode.global.stats.checked} 
-                            max={todoNode.global.stats.total} 
+                          <ProgressBar
+                            value={todoNode.global.stats.checked}
+                            max={todoNode.global.stats.total}
                           />
                         </div>
                       </td>

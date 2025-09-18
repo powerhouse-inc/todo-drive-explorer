@@ -1,5 +1,3 @@
- 
- 
 import {
   useDriveContext,
   exportDocument,
@@ -38,9 +36,19 @@ export interface EditorContainerProps {
 }
 
 export const EditorContainer: React.FC<EditorContainerProps> = (props) => {
-  const { driveId, documentId, documentType, onClose, title, context, documentModelModule, editorModule } = props;
+  const {
+    driveId,
+    documentId,
+    documentType,
+    onClose,
+    title,
+    context,
+    documentModelModule,
+    editorModule,
+  } = props;
 
-  const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItem | null>(null);
+  const [selectedTimelineItem, setSelectedTimelineItem] =
+    useState<TimelineItem | null>(null);
   const [showRevisionHistory, setShowRevisionHistory] = useState(false);
   const { useDocumentEditorProps } = useDriveContext();
   const user = context.user as User | undefined;

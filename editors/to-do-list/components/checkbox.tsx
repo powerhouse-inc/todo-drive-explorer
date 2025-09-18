@@ -8,7 +8,7 @@ interface CheckboxProps {
 export const Checkbox = ({ value, onChange }: CheckboxProps) => {
   return (
     <Form onSubmit={() => {}}>
-      <BooleanField 
+      <BooleanField
         name="checked"
         description="Check this box to mark the todo as completed"
         value={value}

@@ -8,7 +8,10 @@ import {
   copyNode,
   type DocumentDriveAction,
 } from "document-drive";
-import { type DriveEditorProps, DriveContextProvider } from "@powerhousedao/reactor-browser";
+import {
+  type DriveEditorProps,
+  DriveContextProvider,
+} from "@powerhousedao/reactor-browser";
 import { AnalyticsProvider } from "@powerhousedao/reactor-browser/analytics/context";
 import { WagmiContext } from "@powerhousedao/design-system";
 import { DriveExplorer } from "./components/DriveExplorer.js";

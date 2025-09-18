@@ -1,11 +1,21 @@
-import { useState, useEffect } from 'react';
-import { documentModelsMap, documentEditorMap, createLazyModuleLoader } from '../document-model.js';
-import { type DocumentModelModule, type EditorModule, type PHDocument } from 'document-model';
+import { useState, useEffect } from "react";
+import {
+  documentModelsMap,
+  documentEditorMap,
+  createLazyModuleLoader,
+} from "../document-model.js";
+import {
+  type DocumentModelModule,
+  type EditorModule,
+  type PHDocument,
+} from "document-model";
 
 /**
  * Hook that returns the document model for a given document type
  */
-export function useDocumentModel(documentType: string): DocumentModelModule<any> {
+export function useDocumentModel(
+  documentType: string,
+): DocumentModelModule<any> {
   return documentModelsMap[documentType];
 }
 
@@ -19,17 +29,21 @@ export function useDocumentEditorModule(documentType: string) {
 
   useEffect(() => {
     const editorLoader = documentEditorMap[documentType];
-    
+
     if (editorLoader && !editorModule) {
       setIsLoading(true);
-      
+
       editorLoader()
-        .then(module => {
+        .then((module) => {
           setEditorModule(module);
           setIsLoading(false);
         })
-        .catch(err => {
-          setError(err instanceof Error ? err : new Error('Failed to load editor module'));
+        .catch((err) => {
+          setError(
+            err instanceof Error
+              ? err
+              : new Error("Failed to load editor module"),
+          );
           setIsLoading(false);
         });
     }
@@ -38,6 +52,6 @@ export function useDocumentEditorModule(documentType: string) {
   return {
     editorModule,
     isLoading,
-    error
+    error,
   };
-} 
+}
