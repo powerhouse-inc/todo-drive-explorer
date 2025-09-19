@@ -1,5 +1,4 @@
-import { type IAnalyticsStore } from "@powerhousedao/reactor-browser/analytics";
-import { AnalyticsProvider } from "@powerhousedao/reactor-browser/analytics/context";
+import { AnalyticsProvider } from "@powerhousedao/reactor-browser";
 
 export interface ReactorAnalyticsProviderProps {
   children: React.ReactNode;

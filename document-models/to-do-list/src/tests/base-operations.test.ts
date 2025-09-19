@@ -28,9 +28,13 @@ describe("BaseOperations Operations", () => {
     const updatedDocument = reducer(document, creators.addTodoItem(input));
 
     expect(updatedDocument.operations.global).toHaveLength(1);
-    expect(updatedDocument.operations.global[0].type).toBe("ADD_TODO_ITEM");
-    expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-    expect(updatedDocument.operations.global[0].index).toEqual(0);
+    expect(updatedDocument.operations.global?.[0]?.action.type).toBe(
+      "ADD_TODO_ITEM",
+    );
+    expect(updatedDocument.operations.global?.[0]?.action.input).toStrictEqual(
+      input,
+    );
+    expect(updatedDocument.operations.global?.[0]?.index).toEqual(0);
   });
   it("should handle updateTodoItem operation", () => {
     const input: UpdateTodoItemInput = generateMock(
@@ -40,9 +44,13 @@ describe("BaseOperations Operations", () => {
     const updatedDocument = reducer(document, creators.updateTodoItem(input));
 
     expect(updatedDocument.operations.global).toHaveLength(1);
-    expect(updatedDocument.operations.global[0].type).toBe("UPDATE_TODO_ITEM");
-    expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-    expect(updatedDocument.operations.global[0].index).toEqual(0);
+    expect(updatedDocument.operations.global?.[0]?.action.type).toBe(
+      "UPDATE_TODO_ITEM",
+    );
+    expect(updatedDocument.operations.global?.[0]?.action.input).toStrictEqual(
+      input,
+    );
+    expect(updatedDocument.operations.global?.[0]?.index).toEqual(0);
   });
   it("should handle deleteTodoItem operation", () => {
     const input: DeleteTodoItemInput = generateMock(
@@ -52,8 +60,12 @@ describe("BaseOperations Operations", () => {
     const updatedDocument = reducer(document, creators.deleteTodoItem(input));
 
     expect(updatedDocument.operations.global).toHaveLength(1);
-    expect(updatedDocument.operations.global[0].type).toBe("DELETE_TODO_ITEM");
-    expect(updatedDocument.operations.global[0].input).toStrictEqual(input);
-    expect(updatedDocument.operations.global[0].index).toEqual(0);
+    expect(updatedDocument.operations.global?.[0]?.action.type).toBe(
+      "DELETE_TODO_ITEM",
+    );
+    expect(updatedDocument.operations.global?.[0]?.action.input).toStrictEqual(
+      input,
+    );
+    expect(updatedDocument.operations.global?.[0]?.index).toEqual(0);
   });
 });

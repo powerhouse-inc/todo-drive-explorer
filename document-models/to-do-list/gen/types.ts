@@ -1,17 +1,20 @@
-import type { PHDocument, ExtendedState } from "document-model";
-import type { ToDoListState } from "./schema/types.js";
+import type { PHDocument, PHBaseState } from "document-model";
 import type { ToDoListAction } from "./actions.js";
+import type { ToDoListState as ToDoListGlobalState } from "./schema/types.js";
 
 export { z } from "./schema/index.js";
-export type * from "./schema/types.js";
+export * from "./schema/types.js";
 type ToDoListLocalState = Record<PropertyKey, never>;
-export type ExtendedToDoListState = ExtendedState<
-  ToDoListState,
-  ToDoListLocalState
->;
-export type ToDoListDocument = PHDocument<
-  ToDoListState,
+type ToDoListPHState = PHBaseState & {
+  global: ToDoListGlobalState;
+  local: ToDoListLocalState;
+};
+type ToDoListDocument = PHDocument<ToDoListPHState>;
+
+export type {
+  ToDoListGlobalState,
   ToDoListLocalState,
-  ToDoListAction
->;
-export type { ToDoListState, ToDoListLocalState, ToDoListAction };
+  ToDoListPHState,
+  ToDoListAction,
+  ToDoListDocument,
+};

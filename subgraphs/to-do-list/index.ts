@@ -1,9 +1,9 @@
-import { Subgraph } from "@powerhousedao/reactor-api";
+import { BaseSubgraph } from "@powerhousedao/reactor-api";
 
 import { schema } from "./schema.js";
 import { getResolvers } from "./resolvers.js";
 
-export class ToDoListSubgraph extends Subgraph {
+export class ToDoListSubgraph extends BaseSubgraph {
   name = "to-do-list";
 
   typeDefs = schema;

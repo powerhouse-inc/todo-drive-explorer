@@ -1,13 +1,17 @@
+// TODO: remove eslint-disable rules once refactor is done
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   type StateReducer,
   isDocumentAction,
   createReducer,
 } from "document-model";
-import { type ToDoListDocument, z } from "./types.js";
+import type { ToDoListPHState } from "./types.js";
+import { z } from "./types.js";
 
 import { reducer as BaseOperationsReducer } from "../src/reducers/base-operations.js";
 
-const stateReducer: StateReducer<ToDoListDocument> = (
+export const stateReducer: StateReducer<ToDoListPHState> = (
   state,
   action,
   dispatch,
@@ -20,8 +24,8 @@ const stateReducer: StateReducer<ToDoListDocument> = (
     case "ADD_TODO_ITEM":
       z.AddTodoItemInputSchema().parse(action.input);
       BaseOperationsReducer.addTodoItemOperation(
-        state[action.scope],
-        action,
+        (state as any)[action.scope],
+        action as any,
         dispatch,
       );
       break;
@@ -29,8 +33,8 @@ const stateReducer: StateReducer<ToDoListDocument> = (
     case "UPDATE_TODO_ITEM":
       z.UpdateTodoItemInputSchema().parse(action.input);
       BaseOperationsReducer.updateTodoItemOperation(
-        state[action.scope],
-        action,
+        (state as any)[action.scope],
+        action as any,
         dispatch,
       );
       break;
@@ -38,8 +42,8 @@ const stateReducer: StateReducer<ToDoListDocument> = (
     case "DELETE_TODO_ITEM":
       z.DeleteTodoItemInputSchema().parse(action.input);
       BaseOperationsReducer.deleteTodoItemOperation(
-        state[action.scope],
-        action,
+        (state as any)[action.scope],
+        action as any,
         dispatch,
       );
       break;
@@ -49,4 +53,4 @@ const stateReducer: StateReducer<ToDoListDocument> = (
   }
 };
 
-export const reducer = createReducer<ToDoListDocument>(stateReducer);
+export const reducer = createReducer<ToDoListPHState>(stateReducer);

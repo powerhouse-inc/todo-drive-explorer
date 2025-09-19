@@ -1,1 +1,1 @@
-export { module as ToDoList } from "./to-do-list/index.js";
+export { todoDocumentModelModule as ToDoList } from "./to-do-list/index.js";

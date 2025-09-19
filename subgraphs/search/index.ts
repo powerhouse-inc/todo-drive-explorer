@@ -1,8 +1,8 @@
-import { Subgraph } from "@powerhousedao/reactor-api";
+import { BaseSubgraph } from "@powerhousedao/reactor-api";
 
 import { gql } from "graphql-tag";
 
-export class SearchSubgraph extends Subgraph {
+export class SearchSubgraph extends BaseSubgraph {
   name = "search";
 
   resolvers = {
@@ -25,19 +25,19 @@ export class SearchSubgraph extends Subgraph {
     example: "test",
   };
 
-  async onSetup() {
-    await this.createOperationalTables();
-  }
+  // async onSetup() {
+  //   await this.createOperationalTables();
+  // }
 
-  async createOperationalTables() {
-    await this.operationalStore.schema.createTableIfNotExists(
-      "example",
-      (table) => {
-        table.string("id").primary();
-        table.string("name");
-      },
-    );
-  }
+  // async createOperationalTables() {
+  //   await this.operationalStore.schema.createTableIfNotExists(
+  //     "example",
+  //     (table) => {
+  //       table.string("id").primary();
+  //       table.string("name");
+  //     },
+  //   );
+  // }
 
   async onDisconnect() {}
 }

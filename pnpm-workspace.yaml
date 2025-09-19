@@ -1,0 +1,3 @@
+overrides:
+  '@powerhousedao/ph-cli': link:../powerhouse/clis/ph-cli
+  '@powerhousedao/connect': link:../powerhouse/apps/connect

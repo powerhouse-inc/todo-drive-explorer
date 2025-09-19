@@ -1,8 +1,7 @@
 import { type DriveEditorModule } from "@powerhousedao/reactor-browser";
 import Editor from "./editor.js";
-import { type DocumentDriveDocument } from "document-drive";
 
-export const module: DriveEditorModule<DocumentDriveDocument> = {
+export const module: DriveEditorModule = {
   Component: Editor,
   documentTypes: ["powerhouse/document-drive"],
   config: {

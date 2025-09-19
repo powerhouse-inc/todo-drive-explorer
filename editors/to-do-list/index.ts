@@ -1,12 +1,8 @@
-import type { EditorModule, EditorProps } from "document-model";
+import type { EditorModule } from "document-model";
 import Editor from "./editor.js";
-import type { ToDoListDocument } from "../../document-models/to-do-list/index.js";
-import { type FC } from "react";
 
-export const module: EditorModule<ToDoListDocument> = {
-  Component: Editor as unknown as FC<
-    EditorProps<ToDoListDocument> & Record<string, unknown>
-  >,
+export const module: EditorModule = {
+  Component: Editor,
   documentTypes: ["powerhouse/todolist"],
   config: {
     id: "editor-id",

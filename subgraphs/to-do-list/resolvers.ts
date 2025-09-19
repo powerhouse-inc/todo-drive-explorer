@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { type Subgraph } from "@powerhousedao/reactor-api";
+import { type BaseSubgraph } from "@powerhousedao/reactor-api";
 import { addFile } from "document-drive";
-import { actions } from "../../document-models/to-do-list/index.js";
+import {
+  actions,
+  type ToDoListDocument,
+} from "../../document-models/to-do-list/index.js";
 import { generateId } from "document-model";
 
 const DEFAULT_DRIVE_ID = "powerhouse";
 
-export const getResolvers = (subgraph: Subgraph): Record<string, any> => {
+export const getResolvers = (subgraph: BaseSubgraph): Record<string, any> => {
   const reactor = subgraph.reactor;
 
   return {
@@ -18,13 +21,13 @@ export const getResolvers = (subgraph: Subgraph): Record<string, any> => {
           getDocument: async (args: any) => {
             const driveId: string = args.driveId || DEFAULT_DRIVE_ID;
             const docId: string = args.docId || "";
-            const doc = await reactor.getDocument(driveId, docId);
+            const doc = (await reactor.getDocument(docId)) as ToDoListDocument;
             return {
               driveId: driveId,
               ...doc,
               state: doc.state.global,
               stateJSON: doc.state.global,
-              revision: doc.revision.global,
+              revision: doc.header.revision.global,
             };
           },
           getDocuments: async (args: any) => {
@@ -32,19 +35,21 @@ export const getResolvers = (subgraph: Subgraph): Record<string, any> => {
             const docsIds = await reactor.getDocuments(driveId);
             const docs = await Promise.all(
               docsIds.map(async (docId) => {
-                const doc = await reactor.getDocument(driveId, docId);
+                const doc = (await reactor.getDocument(
+                  docId,
+                )) as ToDoListDocument;
                 return {
                   driveId: driveId,
                   ...doc,
                   state: doc.state.global,
                   stateJSON: doc.state.global,
-                  revision: doc.revision.global,
+                  revision: doc.header.revision.global,
                 };
               }),
             );
 
             return docs.filter(
-              (doc) => doc.documentType === "powerhouse/todolist",
+              (doc) => doc.header.documentType === "powerhouse/todolist",
             );
           },
         };
@@ -90,7 +95,7 @@ export const getResolvers = (subgraph: Subgraph): Record<string, any> => {
           actions.addTodoItem({ ...args.input }),
         );
 
-        return doc.revision.global + 1;
+        return doc.header.revision.global ?? 0 + 1;
       },
 
       ToDoList_updateTodoItem: async (_: any, args: any) => {
@@ -104,7 +109,7 @@ export const getResolvers = (subgraph: Subgraph): Record<string, any> => {
           actions.updateTodoItem({ ...args.input }),
         );
 
-        return doc.revision.global + 1;
+        return doc.header.revision.global ?? 0 + 1;
       },
 
       ToDoList_deleteTodoItem: async (_: any, args: any) => {
@@ -118,7 +123,7 @@ export const getResolvers = (subgraph: Subgraph): Record<string, any> => {
           actions.deleteTodoItem({ ...args.input }),
         );
 
-        return doc.revision.global + 1;
+        return doc.header.revision.global ?? 0 + 1;
       },
     },
   };

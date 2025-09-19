@@ -1,64 +1,26 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { EditorProps } from "document-model";
 import {
-  type ToDoListDocument,
   actions,
   type ToDoItem,
 } from "../../document-models/to-do-list/index.js";
 import { InputField } from "./components/inputField.js";
-import { Button } from "@powerhousedao/design-system";
 import { Checkbox } from "./components/checkbox.js";
-export type IProps = EditorProps<ToDoListDocument>;
+import { useSelectedDocument } from "@powerhousedao/reactor-browser";
+import { isTodoDocument } from "../../utils.js";
 
-export default function Editor(props: IProps) {
-  const { document: writeModeDocument, dispatch, context } = props;
-  const {
-    readMode = false,
-    selectedTimelineRevision,
-    getDocumentRevision,
-  } = context;
+export default function Editor(props: EditorProps) {
+  const { context } = props;
+  const [document, dispatch] = useSelectedDocument();
+  const [selectedItem, setSelectedItem] = useState<string>();
+  const [inputText, setInputText] = useState<string>("");
 
-  const [readModeDocument, setReadModeDocument] =
-    useState<ToDoListDocument | null>(null);
-  const [todoItem, setTodoItem] = useState("");
-  const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [editedText, setEditedText] = useState("");
+  if (!isTodoDocument(document)) {
+    return null;
+  }
 
-  const document = readModeDocument || writeModeDocument;
-
-  console.log("selectedTimelineRevision", selectedTimelineRevision);
-
-  const {
-    state: { global: state },
-  } = document;
-
-  useEffect(() => {
-    const getReadModeDocument = async () => {
-      if (
-        getDocumentRevision &&
-        readMode &&
-        typeof selectedTimelineRevision === "number"
-      ) {
-        const document = (await getDocumentRevision({
-          revisions: { global: selectedTimelineRevision },
-        })) as ToDoListDocument;
-        setReadModeDocument(document);
-      } else if (!readMode) {
-        setReadModeDocument(null);
-      }
-    };
-    getReadModeDocument();
-  }, [
-    getDocumentRevision,
-    setReadModeDocument,
-    readMode,
-    selectedTimelineRevision,
-  ]);
-
-  // Sort items by checked status
-  const sortedItems: ToDoItem[] = [...state.items].sort((a, b) => {
-    return (b.checked ? 1 : 0) - (a.checked ? 1 : 0);
-  });
+  const { items, stats } = document.state.global;
+  const sortedItems = items.toSorted((a, b) => (a.checked ? 1 : -1));
 
   return (
     <>
@@ -74,11 +36,6 @@ export default function Editor(props: IProps) {
           >
             My To-Do List
           </h1>
-          {readMode && (
-            <div className="text-gray-500 text-md text-center">
-              (🔒 Read Mode)
-            </div>
-          )}
           <br />
           <div
             style={{
@@ -103,30 +60,31 @@ export default function Editor(props: IProps) {
                   gap: "10px",
                 }}
               >
-                {!readMode && (
+                {
                   <>
                     <div style={{ flex: 1 }}>
                       <InputField
                         label="Add a new item"
-                        input={todoItem}
+                        input={inputText}
                         handleInputChange={(e) => {
-                          setTodoItem(e.target.value);
+                          setInputText(e.target.value);
                         }}
-                        value={todoItem}
+                        value={inputText}
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
                             dispatch(
                               actions.addTodoItem({
                                 id: Math.random().toString(),
-                                text: todoItem,
+                                text: inputText,
                               }),
                             );
-                            setTodoItem("");
+                            setInputText("");
+                            setSelectedItem(undefined);
                           }
                         }}
                       />
                     </div>
-                    <Button
+                    <button
                       style={{
                         margin: "27px 0 0 0",
                         padding: "0px 20px",
@@ -134,24 +92,24 @@ export default function Editor(props: IProps) {
                         minWidth: "80px",
                         cursor: "pointer",
                       }}
-                      size="small"
                       onClick={() => {
                         dispatch(
                           actions.addTodoItem({
                             id: Math.random().toString(),
-                            text: todoItem,
+                            text: inputText,
                           }),
                         );
-                        setTodoItem("");
+                        setInputText("");
+                        setSelectedItem(undefined);
                       }}
                     >
                       Add
-                    </Button>
+                    </button>
                   </>
-                )}
+                }
               </div>
             </div>
-            {state.items.length >= 2 && (
+            {items.length >= 2 && (
               <div
                 style={{
                   flex: "1 1 300px",
@@ -196,7 +154,7 @@ export default function Editor(props: IProps) {
                           color: "#1e293b",
                         }}
                       >
-                        {state.stats.total}
+                        {stats.total}
                       </div>
                     </div>
                     <div>
@@ -216,7 +174,7 @@ export default function Editor(props: IProps) {
                           color: "#16a34a",
                         }}
                       >
-                        {state.stats.checked}
+                        {stats.checked}
                       </div>
                     </div>
                     <div>
@@ -236,15 +194,14 @@ export default function Editor(props: IProps) {
                           color: "#ea580c",
                         }}
                       >
-                        {state.stats.unchecked}
+                        {stats.unchecked}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {!readMode && (
-                  <Button
-                    size="small"
+                {
+                  <button
                     style={{
                       backgroundColor: "#ff4d4d",
                       color: "white",
@@ -255,7 +212,7 @@ export default function Editor(props: IProps) {
                       alignSelf: "center",
                     }}
                     onClick={() => {
-                      state.items.forEach((item) => {
+                      items.forEach((item) => {
                         dispatch(
                           actions.deleteTodoItem({
                             id: item.id,
@@ -265,8 +222,8 @@ export default function Editor(props: IProps) {
                     }}
                   >
                     Remove All
-                  </Button>
-                )}
+                  </button>
+                }
               </div>
             )}
           </div>
@@ -306,59 +263,55 @@ export default function Editor(props: IProps) {
                     display: "flex",
                     alignItems: "center",
                     gap: "12px",
-                    minWidth: readMode ? "auto" : "100px",
+                    minWidth: "100px",
                   }}
                 >
-                  {readMode ? (
-                    <div>{item.checked ? "✅" : "◻️"}</div>
-                  ) : (
-                    <>
-                      <Checkbox
-                        value={item.checked}
-                        onChange={(e: boolean) => {
-                          dispatch(
-                            actions.updateTodoItem({ id: item.id, checked: e }),
-                          );
-                        }}
-                      />
-                      <Button
-                        style={{
-                          color: "#ff4d4d",
-                          padding: "4px 8px",
-                          minWidth: "auto",
-                          backgroundColor: "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => {
-                          dispatch(
-                            actions.deleteTodoItem({
-                              id: item.id,
-                            }),
-                          );
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    </>
-                  )}
+                  <>
+                    <Checkbox
+                      value={item.checked}
+                      onChange={(e: boolean) => {
+                        dispatch(
+                          actions.updateTodoItem({ id: item.id, checked: e }),
+                        );
+                      }}
+                    />
+                    <button
+                      style={{
+                        color: "#ff4d4d",
+                        padding: "4px 8px",
+                        minWidth: "auto",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        dispatch(
+                          actions.deleteTodoItem({
+                            id: item.id,
+                          }),
+                        );
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </>
                 </div>
 
                 <div style={{ flex: 1 }}>
-                  {editingItemId === item.id && !readMode ? (
+                  {selectedItem === item.id ? (
                     <InputField
-                      input={editedText}
-                      value={editedText}
-                      handleInputChange={(e) => setEditedText(e.target.value)}
+                      input={inputText}
+                      value={inputText}
+                      handleInputChange={(e) => setInputText(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           dispatch(
                             actions.updateTodoItem({
                               id: item.id,
-                              text: editedText,
+                              text: inputText,
                             }),
                           );
-                          setEditingItemId(null);
+                          setSelectedItem(undefined);
                         }
                       }}
                     />
@@ -371,8 +324,8 @@ export default function Editor(props: IProps) {
                         color: item.checked ? "#94a3b8" : "#1e293b",
                       }}
                       onClick={() => {
-                        setEditingItemId(item.id);
-                        setEditedText(item.text);
+                        setSelectedItem(item.id);
+                        setInputText(item.text);
                       }}
                     >
                       {item.text}
